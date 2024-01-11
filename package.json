@@ -1,0 +1,34 @@
+{
+  "name": "dependency-manager",
+  "version": "0.0.1",
+  "description": "Advanced dependency manager with an inversion-of-control container and decorators written in TypeScript",
+  "author": "Marçal Torà <marshall@marshall.cat>",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "mocha -r ts-node/esm \"**/*.spec.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarshallCat94/dependency-manager.git"
+  },
+  "keywords": [
+    "dependency",
+    "manager",
+    "ioc",
+    "container",
+    "decorator"
+  ],
+  "bugs": {
+    "url": "https://github.com/MarshallCat94/dependency-manager/issues"
+  },
+  "homepage": "https://github.com/MarshallCat94/dependency-manager#readme",
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
