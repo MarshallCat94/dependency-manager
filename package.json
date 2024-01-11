@@ -6,7 +6,8 @@
   "license": "ISC",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha -r ts-node/esm \"**/*.spec.ts\""
+    "test": "mocha -r ts-node/esm \"**/*.spec.ts\"",
+    "preinstall": "tsc"
   },
   "repository": {
     "type": "git",
