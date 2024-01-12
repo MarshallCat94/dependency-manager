@@ -1,3 +1,4 @@
+import { InjectionToken } from "../types";
 import { DependencyManager } from "../DependencyManager";
 
 export function Inject(
