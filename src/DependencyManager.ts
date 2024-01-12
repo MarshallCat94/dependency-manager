@@ -1,5 +1,9 @@
+import { InjectionToken } from './types';
+import { KeyManagement } from './KeyManagement';
+
 export class DependencyManager {
   private static instances: Record<string, DependencyManager> = {};
+  protected readonly keys: KeyManagement = new KeyManagement();
   protected readonly storage: Record<string, any> = {};
 
   protected constructor() {}
@@ -14,40 +18,34 @@ export class DependencyManager {
     return this.instances[name];
   }
 
-  protected getKey(identifier: InjectionToken): string {
-    return identifier instanceof Function
-      ? identifier.name
-      : identifier;
-  }
+  declare(reference: InjectionToken, value: any) {
+    const { hash, name } = this.keys.get(reference);
 
-  declare(identifier: InjectionToken, value: any) {
-    const key = this.getKey(identifier);
-
-    if (key in this.storage) {
-      throw new Error(`Dependency "${key}" already declared.`);
+    if (hash in this.storage) {
+      throw new Error(`Dependency "${name}" already declared.`);
     }
 
-    this.storage[key] = value;
+    this.storage[hash] = value;
   }
 
-  unset(identifier: InjectionToken) {
-    const key = this.getKey(identifier);
+  unset(reference: InjectionToken) {
+    const { hash, name } = this.keys.get(reference);
 
-    if (!(key in this.storage)) {
-      throw new ReferenceError(`Dependency "${key}" not found.`);
+    if (!(hash in this.storage)) {
+      throw new ReferenceError(`Dependency "${name}" not found.`);
     }
 
-    delete this.storage[key];
+    delete this.storage[hash];
   }
 
-  wire<T = any>(identifier: InjectionToken): T {
-    const key = this.getKey(identifier);
-    const value = this.storage[key];
+  wire<T = any>(reference: InjectionToken): T {
+    const { hash, name } = this.keys.get(reference);
+    const value = this.storage[hash];
 
-    if (!(key in this.storage) || null == value) {
-      throw new ReferenceError(`Dependency "${key}" not found.`);
+    if (null == value) {
+      throw new ReferenceError(`Dependency "${name}" not found.`);
     }
 
-    return this.storage[key];
+    return this.storage[hash];
   }
 }
