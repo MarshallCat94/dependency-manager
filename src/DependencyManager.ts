@@ -1,9 +1,5 @@
-import { InjectionToken } from './types';
-import { KeyManagement } from './KeyManagement';
-
 export class DependencyManager {
   private static instances: Record<string, DependencyManager> = {};
-  protected readonly keys: KeyManagement = new KeyManagement();
   protected readonly storage: Record<string, any> = {};
 
   protected constructor() {}
@@ -18,34 +14,29 @@ export class DependencyManager {
     return this.instances[name];
   }
 
-  declare(reference: InjectionToken, value: any) {
-    const { hash, name } = this.keys.get(reference);
-
-    if (hash in this.storage) {
-      throw new Error(`Dependency "${name}" already declared.`);
+  declare(reference: string, value: any) {
+    if (reference in this.storage) {
+      throw new Error(`Dependency "${reference}" already declared.`);
     }
 
-    this.storage[hash] = value;
+    this.storage[reference] = value;
   }
 
-  unset(reference: InjectionToken) {
-    const { hash, name } = this.keys.get(reference);
-
-    if (!(hash in this.storage)) {
-      throw new ReferenceError(`Dependency "${name}" not found.`);
+  unset(reference: string) {
+    if (!(reference in this.storage)) {
+      throw new ReferenceError(`Dependency "${reference}" not found.`);
     }
 
-    delete this.storage[hash];
+    delete this.storage[reference];
   }
 
-  wire<T = any>(reference: InjectionToken): T {
-    const { hash, name } = this.keys.get(reference);
-    const value = this.storage[hash];
+  wire<T = any>(reference: string): T {
+    const value = this.storage[reference];
 
     if (null == value) {
-      throw new ReferenceError(`Dependency "${name}" not found.`);
+      throw new ReferenceError(`Dependency "${reference}" not found.`);
     }
 
-    return this.storage[hash];
+    return value;
   }
 }
