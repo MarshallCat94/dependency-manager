@@ -1,17 +1,19 @@
-import { InjectionToken } from "../types";
+import { Package } from "../utilities/Package";
 import { DependencyManager } from "../DependencyManager";
 
 export const Injectable = (
-  identifier?: InjectionToken,
+  identifier?: string,
 ): ClassDecorator => {
   return (Target: Function) => {
     if (Target.length > 0) {
       throw new TypeError(`Target "${Target.name}" cannot be instantiated.`);
     }
 
-    const dependencyManager = DependencyManager.getInstance();
+    const pkg = Package.getNearest();
+    const dependencyManager = DependencyManager.getInstance(pkg.name);
+
     dependencyManager.declare(
-      identifier ?? Target,
+      identifier ?? Target.name,
       new (Target as new() => any),
     );
   };
