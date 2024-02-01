@@ -1,5 +1,9 @@
+import { KeyManagement } from "./KeyManagement";
+
 export class DependencyManager {
   private static instances: Record<string, DependencyManager> = {};
+
+  protected readonly keys: KeyManagement = new KeyManagement();
   protected readonly storage: Record<string, any> = {};
 
   protected constructor() {}
