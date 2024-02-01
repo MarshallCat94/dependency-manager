@@ -1,15 +1,14 @@
-import { Package } from "../utilities/Package";
 import { DependencyManager } from "../DependencyManager";
 
 export function Inject(
   reference: string,
+  instanceName?: string,
 ): PropertyDecorator {
   return (
     target: Object,
     property: string | symbol,
   ) => {
-    const pkg = Package.getNearest();
-    const dependencyManager = DependencyManager.getInstance(pkg.name);
+    const dependencyManager = DependencyManager.getInstance(instanceName);
 
     Object.defineProperty(target, property, {
       get: () => dependencyManager.wire(reference),
