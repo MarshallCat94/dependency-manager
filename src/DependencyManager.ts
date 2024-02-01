@@ -1,4 +1,5 @@
 import { KeyManagement } from "./KeyManagement";
+import { InjectionToken } from "./types";
 
 export class DependencyManager {
   private static instances: Record<string, DependencyManager> = {};
@@ -18,27 +19,32 @@ export class DependencyManager {
     return this.instances[name];
   }
 
-  declare(reference: string, value: any) {
-    if (reference in this.storage) {
-      throw new Error(`Dependency "${reference}" already declared.`);
+  declare(token: InjectionToken, value: any) {
+    const { name, hash } = this.keys.get(token);
+
+    if (hash in this.storage) {
+      throw new Error(`Dependency "${name}" already declared.`);
     }
 
-    this.storage[reference] = value;
+    this.storage[hash] = value;
   }
 
-  unset(reference: string) {
-    if (!(reference in this.storage)) {
-      throw new ReferenceError(`Dependency "${reference}" not found.`);
+  unset(token: InjectionToken) {
+    const { name, hash } = this.keys.get(token);
+
+    if (!(hash in this.storage)) {
+      throw new ReferenceError(`Dependency "${name}" not found.`);
     }
 
-    delete this.storage[reference];
+    delete this.storage[hash];
   }
 
-  wire<T = any>(reference: string): T {
-    const value = this.storage[reference];
+  wire<T = any>(token: InjectionToken): T {
+    const { name, hash } = this.keys.get(token);
+    const value = this.storage[hash];
 
     if (null == value) {
-      throw new ReferenceError(`Dependency "${reference}" not found.`);
+      throw new ReferenceError(`Dependency "${name}" not found.`);
     }
 
     return value;
